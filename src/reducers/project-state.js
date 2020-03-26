@@ -107,8 +107,8 @@ const getIsError = loadingState => (
 const initialState = {
     error: null,
     projectData: null,
-    projectId: null,
-    loadingState: LoadingState.NOT_LOADED
+    projectId: defaultProjectId, // null,
+    loadingState: LoadingState.SHOWING_WITH_ID //  LoadingState.NOT_LOADED
 };
 
 const reducer = function (state, action) {

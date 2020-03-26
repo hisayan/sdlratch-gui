@@ -48,11 +48,33 @@ const messages = defineMessages({
 });
 
 class GUI extends React.Component {
+    componentWillMount () {
+        console.log('gui.componentWillMount');
+    }
     componentDidMount () {
         setIsScratchDesktop(this.props.isScratchDesktop);
         this.setReduxTitle(this.props.projectTitle);
         this.props.onStorageInit(storage);
         this.props.onVmInit(this.props.vm);
+        console.log('gui.componentDidMount');
+        // this.store.dispatch({type: 'scratch-gui/mode/SET_FULL_SCREEN', isFullScreen: false});
+
+        fetch('/static/SDLratch.sb3').then((response) => {
+            console.log("load step 1");
+            return response.arrayBuffer();
+        }).then((result)=> {
+            console.log("load step 2");
+            this.props.vm.loadProject(result)
+            .then(() => {
+                console.log("load step 3");
+                this.props.onUpdateProjectTitle('SDLratch');
+                // dispatch(onLoadedProject(LoadingState.FETCHING_WITH_ID, false, true));
+            })
+            .catch(error => {
+                console.log("load step error");
+                console.error(error);
+            });
+        });
     }
     componentDidUpdate (prevProps) {
         if (this.props.projectId !== prevProps.projectId && this.props.projectId !== null) {
@@ -187,7 +209,7 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
     onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal()),
-    onUpdateReduxProjectTitle: title => dispatch(setProjectTitle(title))
+    onUpdateReduxProjectTitle: title => dispatch(setProjectTitle(title)),
 });
 
 const ConnectedGUI = injectIntl(connect(

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script language="javascript" type="text/javascript">
+            const mode = "Native"; // or "BootCamp"
+            const hostname = "raspberrypi.local";
+
+            if (mode == "Native") {
+                ws = new WebSocket("ws://" + hostname + ":8087/"); // SDL Native
+            } else {
+                ws = new WebSocket("ws://" + hostname + ":8088/"); // SDL BootCamp
+            }
+
+            // 接続
+            ws.addEventListener("open", function(e) {
+                console.log("WebSocket connected");
+            });
+
+            // サーバーからデータを受け取る
+            ws.addEventListener("message", function(e) {
+                console.log("on message", e.data);
+            });
+
+            function send(params) {
+                console.log(params);
+                if (mode == "Native") {
+                    sendData = {
+                        // SDL Native
+                        jsonrpc: "2.0",
+                        method: "VehicleInfo.OnVehicleData",
+                        params: params
+                    };
+                } else {
+                    sendData = { VehicleData: params }; // SDL BootCamp
+                }
+                // console.log(sendData);
+                console.log(JSON.stringify(sendData));
+                ws.send(JSON.stringify(sendData));
+            }
+
+            function changeElectronicParkBrakeStatus() {
+                var electronicParkBrakeStatus = document.getElementsByName(
+                    "electronicParkBrakeStatus"
+                );
+                for (var i = 0; i < electronicParkBrakeStatus.length; i++) {
+                    if (electronicParkBrakeStatus[i].checked) {
+                        send({
+                            electronicParkBrakeStatus:
+                                electronicParkBrakeStatus[i].value
+                        });
+                    }
+                }
+            }
+            function changeTurnSignal() {
+                var turnSignal = document.getElementsByName("turnSignal");
+                for (var i = 0; i < turnSignal.length; i++) {
+                    if (turnSignal[i].checked) {
+                        send({ turnSignal: turnSignal[i].value });
+                    }
+                }
+            }
+
+            function changePrndl() {
+                var prndl = document.getElementsByName("prndl");
+                for (var i = 0; i < prndl.length; i++) {
+                    if (prndl[i].checked) {
+                        send({ prndl: prndl[i].value });
+                    }
+                }
+            }
+
+            function changeSpeed(speed) {
+                document.getElementsByName("speed")[0].value = speed;
+                send({ speed: parseFloat(speed) });
+            }
+
+            function changeRpm(rpm) {
+                document.getElementsByName("rpm")[0].value = rpm;
+                send({ rpm: parseInt(rpm) });
+            }
+
+            function changeAccPedalPosition(accPedalPosition) {
+                document.getElementsByName(
+                    "accPedalPosition"
+                )[0].value = accPedalPosition;
+                send({ accPedalPosition: parseFloat(accPedalPosition) });
+            }
+        </script>
+    </head>
+    <body>
+        <h3>SDL Simulator <Small>(SDL Bootcamp に送信) </Small></h3>
+        <form id="target">
+            <fieldset>
+                <legend>RPM</legend>
+                <input
+                    type="range"
+                    value="0"
+                    min="0"
+                    max="20000"
+                    step="1"
+                    oninput="changeRpm(this.value)"
+                />
+                <output name="rpm">0</output> rpm
+            </fieldset>
+            <fieldset>
+                <legend>Speed</legend>
+                <input
+                    type="range"
+                    value="0"
+                    min="0"
+                    max="700"
+                    step="0.01"
+                    oninput="changeSpeed(this.value)"
+                />
+                <output name="speed">0</output> km/h
+            </fieldset>
+
+            <fieldset>
+                <legend>Acc Pedal Position</legend>
+                <input
+                    type="range"
+                    value="0"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    oninput="changeAccPedalPosition(this.value)"
+                />
+                <output name="accPedalPosition">0</output> %
+            </fieldset>
+
+            <div style="background-color: #aaa;margin:1em 0">
+                <fieldset>
+                    <legend>Electronic Park Brake Status</legend>
+                    <INPUT
+                        TYPE="Radio"
+                        Name="electronicParkBrakeStatus"
+                        onchange="changeElectronicParkBrakeStatus()"
+                        Value="CLOSED"
+                        checked
+                    />closed
+                    <INPUT
+                        TYPE="Radio"
+                        Name="electronicParkBrakeStatus"
+                        onchange="changeElectronicParkBrakeStatus()"
+                        Value="OPEN"
+                    />open
+                </fieldset>
+
+                <fieldset>
+                    <legend>PRNDL</legend>
+                    <INPUT
+                        TYPE="Radio"
+                        Name="prndl"
+                        onchange="changePrndl()"
+                        Value="PARK"
+                        checked
+                    />Park
+                    <INPUT
+                        TYPE="Radio"
+                        Name="prndl"
+                        onchange="changePrndl()"
+                        Value="REVERSE"
+                    />Reverse
+                    <INPUT
+                        TYPE="Radio"
+                        Name="prndl"
+                        onchange="changePrndl()"
+                        Value="NEUTRAL"
+                    />Neutral
+                    <INPUT
+                        TYPE="Radio"
+                        Name="prndl"
+                        onchange="changePrndl()"
+                        Value="DRIVE"
+                    />Drive
+                </fieldset>
+
+                <!-- <fieldset>
+                    <legend>TurnSignal</legend>
+                    <INPUT
+                        TYPE="Radio"
+                        Name="turnSignal"
+                        onchange="changeTurnSignal()"
+                        Value="LEFT"
+                    />left
+                    <INPUT
+                        TYPE="Radio"
+                        Name="turnSignal"
+                        onchange="changeTurnSignal()"
+                        Value="OFF"
+                        checked
+                    />off
+                    <INPUT
+                        TYPE="Radio"
+                        Name="turnSignal"
+                        onchange="changeTurnSignal()"
+                        Value="RIGHT"
+                    />right |
+                    <INPUT
+                        TYPE="Radio"
+                        Name="turnSignal"
+                        onchange="changeTurnSignal()"
+                        Value="BOTH"
+                    />both
+                </fieldset> -->
+            </div>
+        </form>
+    </body>
+</html>
