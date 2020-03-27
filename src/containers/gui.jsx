@@ -50,22 +50,24 @@ class GUI extends React.Component {
         console.log('gui.componentDidMount');
         // this.store.dispatch({type: 'scratch-gui/mode/SET_FULL_SCREEN', isFullScreen: false});
 
-        fetch('/static/SDLratch.sb3').then((response) => {
-            console.log("load step 1");
-            return response.arrayBuffer();
-        }).then((result)=> {
-            console.log("load step 2");
-            this.props.vm.loadProject(result)
-            .then(() => {
-                console.log("load step 3");
-                // this.props.onUpdateProjectTitle('SDLratch'); << ここで設定できなくなった
-                // dispatch(onLoadedProject(LoadingState.FETCHING_WITH_ID, false, true));
-            })
-            .catch(error => {
-                console.log("load step error");
-                console.error(error);
+        if (navigator.userAgent.match(/SDLratch/)) {
+            fetch('/static/SDLratch.sb3').then((response) => {
+                console.log("load step 1");
+                return response.arrayBuffer();
+            }).then((result)=> {
+                console.log("load step 2");
+                this.props.vm.loadProject(result)
+                .then(() => {
+                    console.log("load step 3");
+                    // this.props.onUpdateProjectTitle('SDLratch'); << ここで設定できなくなった
+                    // dispatch(onLoadedProject(LoadingState.FETCHING_WITH_ID, false, true));
+                })
+                .catch(error => {
+                    console.log("load step error");
+                    console.error(error);
+                });
             });
-        });
+        }
     }
     componentDidUpdate (prevProps) {
         if (this.props.projectId !== prevProps.projectId && this.props.projectId !== null) {

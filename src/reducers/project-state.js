@@ -107,8 +107,8 @@ const getIsError = loadingState => (
 const initialState = {
     error: null,
     projectData: null,
-    projectId: defaultProjectId, // null,
-    loadingState: LoadingState.SHOWING_WITH_ID //  LoadingState.NOT_LOADED
+    projectId: navigator.userAgent.match(/SDLratch/) ? defaultProjectId : null,
+    loadingState: navigator.userAgent.match(/SDLratch/) ? LoadingState.SHOWING_WITH_ID : LoadingState.NOT_LOADED
 };
 
 const reducer = function (state, action) {
