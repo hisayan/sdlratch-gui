@@ -51,6 +51,25 @@ import smartdevicelinkIconURL from "./smartdevicelink/sdl-icon_black-RGB.png";
 
 export default [
     {
+        name: "SmartDeviceLink",
+        extensionId: "smartdevicelink",
+        collaborator: "Tomoyuki Hisada",
+        iconURL: smartdevicelinkURL,
+        insetIconURL: smartdevicelinkIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="conect SmartPhone and Vehicle"
+                description="conect SmartPhone and Vehicle"
+                id="gui.extension.smartdevicelink.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
+        helpLink: "https://scratch.mit.edu/wedo"
+    },
+    {
         name: (
             <FormattedMessage
                 defaultMessage="Music"
@@ -320,24 +339,5 @@ export default [
             />
         ),
         helpLink: "https://scratch.mit.edu/vernier"
-    },
-    {
-        name: "SmartDeviceLink",
-        extensionId: "smartdevicelink",
-        collaborator: "Tomoyuki Hisada",
-        iconURL: smartdevicelinkURL,
-        insetIconURL: smartdevicelinkIconURL,
-        description: (
-            <FormattedMessage
-                defaultMessage="conect SmartPhone and Vehicle"
-                description="conect SmartPhone and Vehicle"
-                id="gui.extension.smartdevicelink.description"
-            />
-        ),
-        featured: true,
-        disabled: false,
-        internetConnectionRequired: true,
-        bluetoothRequired: false,
-        helpLink: "https://scratch.mit.edu/wedo"
     }
 ];
